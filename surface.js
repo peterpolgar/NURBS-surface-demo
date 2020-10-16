@@ -5,7 +5,7 @@ var v_degree, v_degreep1, v_n, v_nplus1, v_U, v_container, v_degchanged, v_t_ste
 // variables of u direction
 var u_degree, u_degreep1, u_n, u_nplus1, u_U, u_container, u_degchanged, u_t_step;
 
-var scp_arr, cam, zunit, FELB, puff_arr, sugar, szog1, szog2, drawcn, drawcp, drawkp;
+var scp_arr, cam, zunit, FELB, puff_arr, sugar, szog1, szog2, drawcn, drawcp, drawkp, notPopup;
 
 // calculate nurbs weight for a given controllpoint (idx) and parameter (t)
 function nurbs_weight(idx, t, degree, U) {
@@ -134,6 +134,7 @@ function setup() {
     drawcn = true;
     drawcp = true;
     drawkp = true;
+    notPopup = true;
     // there is no selected point
     on_point = -1;
     parchanged = true;
@@ -414,12 +415,13 @@ function mouseMoved() {
             // let fg = screenPosition(points[i], points[i + 1], points[i + 2]);
             // console.log('fg', fg.x, fg.y);
             if ( distance(scp_arr[zz * 2], scp_arr[zz * 2 + 1], mouseX, mouseY) <= 100 ) {
-                if ( on_point != i / 3 ) {
+                if ( on_point != i / 3 && notPopup ) {
                     on_point = i / 3;
                     let mp = document.getElementById("myPopup");
                     mp.style.left = (mouseX - mp.offsetWidth / 2) + 'px';
                     mp.style.top = mouseY + 'px';
                     mp.classList.add("show");
+                    notPopup = false;
                 }
                 break;
             }
