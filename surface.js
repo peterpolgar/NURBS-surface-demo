@@ -430,7 +430,14 @@ function mouseMoved() {
 }
 
 function mousePressed() {
-    // console.log(mouseX, mouseY);
+    if ( mouseButton === LEFT ) {
+        let popup = document.getElementById("myPopup");
+        if ( popup.classList.contains("show") ) {
+            popup.classList.remove("show");
+            on_point = -1;
+            notPopup = true;
+        }
+    }
 }
 
 function keyWatch() {
