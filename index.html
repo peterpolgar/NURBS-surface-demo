@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NURBS surface demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
+    <style>
+        body{padding:0; margin:0;}
+        #wrapper{ display: flex; align-items: stretch; width: 100vw; height: 100vh; }
+        #one{ width: 90%; background-color: #6f6f6f; display: flex; flex-direction: column; }
+        #two{ flex-grow: 100; background-color: #fcfcfc; display: flex; flex-direction: column; }
+        #leiras{ min-height: 5%; background-color: #fcfcfc; display: flex; align-items: center; justify-content: center; border-right: 2px solid #6f6f6f; }
+        #pleir{ color: #543E00; margin: 0;}
+        #cvas{ flex-grow: 100; padding: 0; margin: 0;}
+        .deg{ height: 2rem; width: 100%; display: flex; align-items: center; padding: 0.5rem 0; }
+        .degspan{ margin-left: 1rem; }
+        #usage{ font-weight: bold; color: darkgrey; }
+        .knotdiv{ padding: 0 0 0.75rem 1rem; }
+        .knot2div{ padding: 0 0 0.75rem 1rem; }
+        input{ font-size: 14px; max-width: 3rem; }
+        #curveSwitch{ display: flex; width: 100%; height: 2rem; }
+        #butfc{ height: 100%; width: 50%; background-color: #724007; display: flex; align-items: center; justify-content: center; color: gold; font-weight: bold; cursor: pointer; border: 2px solid red; }
+        #butsc{ height: 100%; flex-grow: 100; background-color: darkgreen; display: flex; align-items: center; justify-content: center; color: gold; font-weight: bold; cursor: pointer; }
+        #secondC{ display: none; }
+        .popuptext {
+          visibility: hidden;
+          width: 160px;
+          background-color: #F9FDB8;
+          color: black;
+          text-align: center;
+          border-radius: 6px;
+          padding: 8px 0;
+          position: fixed;
+          z-index: 1;
+          top: 100px;
+          left: 100px;
+          margin-left: 0px;
+        }
+        .show {
+          visibility: visible;
+        }
+        .popdiv {
+            padding: 0 0.25rem;
+            display: inline-block;
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <div id="one">
+        <div id="leiras">
+            <p id="pleir"><span id="usage">Usage:</span> Hover mouse above the point you want to select, and on a selected point you can adjust the x, y, z coordinates and the weight of that point, all of these are feasible by scroll up / scroll down on the corresponding part of the appearing popup. Camera moving around the object: arrows, zoom in: key j, zoom out: key f.</p>&nbsp;&nbsp;<a href="https://peterpolgar.github.io/NURBS-surface-demo">Source code</a>
+        </div>
+        <div id="cvas"></div>
+    </div>
+    
+    <div id="two" style="">
+        <div id="curveSwitch">
+            <div id="butfc">1. curve</div>
+            <div id="butsc">2. curve</div>
+        </div>
+        
+        <div id="firstC">
+            <div class="deg">
+                <span class="degspan">degree (p):&nbsp;</span>
+                <input id="Fidegree" dir="rtl" type="number" value="3" min="1" max="6" step="1">
+            </div>
+            <div style="padding: 0.5rem 0 0.5rem 1rem">Values of knots:</div>
+            <div class="knotdiv">
+                <input dir="rtl" type="number" value="0" min="0" max="1" step="0.1">
+            </div>
+            <div class="knotdiv">
+                <input dir="rtl" type="number" value="1" min="0" max="2" step="0.1">
+            </div>
+            <div class="knotdiv">
+                <input dir="rtl" type="number" value="2" min="1" max="3" step="0.1">
+            </div>
+            <div class="knotdiv">
+                <input dir="rtl" type="number" value="3" min="2" max="4" step="0.1">
+            </div>
+            <div class="knotdiv">
+                <input dir="rtl" type="number" value="4" min="3" max="5" step="0.1">
+            </div>
+            <div class="knotdiv">
+                <input dir="rtl" type="number" value="5" min="4" max="6" step="0.1">
+            </div>
+            <div class="knotdiv">
+                <input dir="rtl" type="number" value="6" min="5" max="7" step="0.1">
+            </div>
+            <div class="knotdiv">
+                <input dir="rtl" type="number" value="7" min="6" max="8" step="0.1">
+            </div>
+            <div class="knotdiv">
+                <input dir="rtl" type="number" value="8" min="7" max="9" step="0.1">
+            </div>
+            <div class="knotdiv">
+                <input dir="rtl" type="number" value="9" min="8" max="10" step="0.1">
+            </div>
+            <div class="knotdiv">
+                <input dir="rtl" type="number" value="10" min="9" max="1000" step="0.1">
+            </div>
+        </div>
+        
+        <div id="secondC">
+            <div class="deg">
+                <span class="degspan">degree (p):&nbsp;</span>
+                <input id="Sidegree" dir="rtl" type="number" value="3" min="1" max="6" step="1">
+            </div>
+            <div style="padding: 0.5rem 0 0.5rem 1rem">Values of knots:</div>
+            <div class="knot2div">
+                <input dir="rtl" type="number" value="0" min="0" max="1" step="0.1">
+            </div>
+            <div class="knot2div">
+                <input dir="rtl" type="number" value="1" min="0" max="2" step="0.1">
+            </div>
+            <div class="knot2div">
+                <input dir="rtl" type="number" value="2" min="1" max="3" step="0.1">
+            </div>
+            <div class="knot2div">
+                <input dir="rtl" type="number" value="3" min="2" max="4" step="0.1">
+            </div>
+            <div class="knot2div">
+                <input dir="rtl" type="number" value="4" min="3" max="5" step="0.1">
+            </div>
+            <div class="knot2div">
+                <input dir="rtl" type="number" value="5" min="4" max="6" step="0.1">
+            </div>
+            <div class="knot2div">
+                <input dir="rtl" type="number" value="6" min="5" max="7" step="0.1">
+            </div>
+            <div class="knot2div">
+                <input dir="rtl" type="number" value="7" min="6" max="8" step="0.1">
+            </div>
+            <div class="knot2div">
+                <input dir="rtl" type="number" value="8" min="7" max="9" step="0.1">
+            </div>
+            <div class="knot2div">
+                <input dir="rtl" type="number" value="9" min="8" max="10" step="0.1">
+            </div>
+            <div class="knot2div">
+                <input dir="rtl" type="number" value="10" min="9" max="1000" step="0.1">
+            </div>
+        </div>
+        <div style="padding: 0.5rem 0 0.5rem 1rem"><input type="checkbox" id="cnCheck" checked='true'> controllnet visible</div>
+        <div style="padding: 0.5rem 0 0.5rem 1rem"><input type="checkbox" id="cpCheck" checked='true'> controlpoints visible</div>
+        <div style="padding: 0.5rem 0 0.5rem 1rem"><input type="checkbox" id="kpCheck" checked='true'> knotpoints visible</div>
+    </div>
+    <div class="popuptext" id="myPopup" onmouseleave="LeavePopup()">
+        <div id="xcor" class="popdiv">X</div>
+        <div id="ycor" class="popdiv">Y</div>
+        <div id="zcor" class="popdiv">Z</div>
+        <div id="pwt" class="popdiv">W</div>
+    </div>
+</div>
+<script src="addScreenPositionFunction.js"></script>
+<script src="surface.js"></script>
+<script type="text/javascript">
+    document.getElementById("butfc").addEventListener('click', ClickFc)
+    document.getElementById("butsc").addEventListener('click', ClickSc)
+    
+    function ClickFc() {
+        var f = document.getElementById("firstC");
+        var bs = document.getElementById('butsc');
+        var s = document.getElementById("secondC");
+        if ( f.style.display === "none" || f.style.display === '' ) {
+            f.style.display = 'block';
+            this.style.border = "2px solid red";
+            s.style.display = 'none';
+            bs.style.border = "0";
+        }
+    }
+    
+    function ClickSc() {
+        var f = document.getElementById("firstC");
+        var bf = document.getElementById('butfc');
+        var s = document.getElementById("secondC");
+        if ( s.style.display === "none" || s.style.display === '' ) {
+            s.style.display = 'block';
+            this.style.border = "2px solid red";
+            f.style.display = 'none';
+            bf.style.border = "0";
+        }
+    }
+    
+    function LeavePopup() {
+      var popup = document.getElementById("myPopup");
+      popup.classList.remove("show");
+      on_point = -1;
+    }
+    
+    document.getElementById('xcor').addEventListener('wheel', Fwheel);
+    document.getElementById('ycor').addEventListener('wheel', Fwheel);
+    document.getElementById('zcor').addEventListener('wheel', Fwheel);
+    document.getElementById('pwt').addEventListener('wheel', Fwheel);
+    
+    function Fwheel(e) {
+        switch ( this.id[0] ) {
+            case 'x' : if(e.deltaY > 0) points[on_point * 3] -= 3; else points[on_point * 3] += 3; break;
+            case 'y' : if(e.deltaY > 0) points[on_point * 3 + 1] += 3; else points[on_point * 3 + 1] -= 3; break;
+            case 'z' : if(e.deltaY > 0) points[on_point * 3 + 2] += 3; else points[on_point * 3 + 2] -= 3; break;
+            case 'p' :
+            w_arr[on_point] += e.deltaY > 0 ? -1 : 1;
+            if ( w_arr[on_point] < 0 ) {
+                w_arr[on_point] = 0;
+            }
+            if ( w_arr[on_point] == 0 ) {
+                pointsize_arr[on_point] = 0;
+            }else if( w_arr[on_point] == 1 ){
+                pointsize_arr[on_point] = 1;
+            }else {
+                pointsize_arr[on_point] *= e.deltaY > 0 ? 0.9 : 1.1;
+            }
+        }
+        drawed = false;
+    }
+    document.getElementById('cnCheck').addEventListener('click', CnCheck);
+    document.getElementById('cpCheck').addEventListener('click', CpCheck);
+    document.getElementById('kpCheck').addEventListener('click', KpCheck);
+    
+    function CnCheck() {
+        drawcn = this.checked;
+        drawed = false;
+    }
+    
+    function CpCheck() {
+        drawcp = this.checked;
+        drawed = false;
+    }
+    
+    function KpCheck() {
+        drawkp = this.checked;
+        drawed = false;
+    }
+    
+</script>
+<script type="text/javascript">
+    document.getElementById("Fidegree").addEventListener('change', Pchanged);
+    document.getElementById("Sidegree").addEventListener('change', Pchanged);
+    
+    function Pchanged(e) {
+        let newp = e.target.value * 1;
+        let degree, U, conid, divid;
+        if ( this.id[0] == 'F' ) {
+            degree = u_degree;
+            U = u_U;
+            conid = 'firstC';
+            divid = 'knotdiv'
+        }else {
+            degree = v_degree;
+            U = v_U;
+            conid = 'secondC';
+            divid = 'knot2div'
+        }
+        // if new value greater than current
+        if ( newp > degree ) {
+            // add knot to the end
+            U.push(U[U.length - 1] + 1);
+            let lastinput = document.getElementById(conid).lastElementChild.firstElementChild;
+            let newdiv = document.getElementById(conid).lastElementChild.cloneNode(true);
+            let newinput = newdiv.firstElementChild;
+            newinput.min = lastinput.value;
+            newinput.max = 1000;
+            newinput.value = newinput.min * 1 + 1;
+            newinput.addEventListener('change', Knotchanged);
+            lastinput.max = newinput.value;
+            document.getElementById(conid).appendChild(newdiv);
+            parchanged = true;
+        }else if( newp < degree ){
+            // delete last knot dom element
+            let x = document.getElementsByClassName(divid);
+            // console.log('xhossz', x.length, 'uhossz', U.length);
+            x[U.length - 2].firstElementChild.max = 1000;
+            x[U.length - 1].remove();
+            U.pop();
+            parchanged = true;
+        }
+        if ( parchanged && this.id[0] == 'F' ) {
+            u_degree = newp;
+            u_degreep1 = newp + 1;
+            u_degchanged = true;
+        }else {
+            v_degree = newp;
+            v_degreep1 = newp + 1;
+            v_degchanged = true;
+        }
+        drawed = false;
+    }
+    
+    var ff = document.getElementsByClassName("knotdiv");
+    for ( let gg = 0; gg < ff.length; ++gg ) {
+        ff[gg].firstElementChild.addEventListener('change', Knotchanged);
+    }
+    ff = document.getElementsByClassName("knot2div");
+    for ( let gg = 0; gg < ff.length; ++gg ) {
+        ff[gg].firstElementChild.addEventListener('change', Knotchanged2);
+    }
+    
+    function Knotchanged(e) {
+        let dex = 0, tv = e.target.value * 1;
+        let o = document.getElementsByClassName("knotdiv");
+        for ( let r = 0; r < o.length; ++r ) {
+            if ( this == o[r].firstElementChild ) {
+                dex = r;
+                break;
+            }
+        }
+        if ( u_U[dex] != tv ) {
+            // console.log(tv, 'dex: ', dex, o[dex].firstElementChild.min, ' ', o[dex].firstElementChild.max);
+            u_U[dex] = tv;
+            var q = this.parentElement;
+            if ( dex < o.length - 1 ) {
+                q.nextElementSibling.firstElementChild.min = tv;
+            }
+            if ( dex > 0 ) {
+                q.previousElementSibling.firstElementChild.max = tv;
+            }
+            parchanged = true;
+            drawed = false;
+        }
+    }
+    
+    function Knotchanged2(e) {
+        let dex = 0, tv = e.target.value * 1;
+        let o = document.getElementsByClassName("knot2div");
+        for ( let r = 0; r < o.length; ++r ) {
+            if ( this == o[r].firstElementChild ) {
+                dex = r;
+                break;
+            }
+        }
+        if ( v_U[dex] != tv ) {
+            // console.log(tv, 'dex: ', dex, o[dex].firstElementChild.min, ' ', o[dex].firstElementChild.max);
+            v_U[dex] = tv;
+            var q = this.parentElement;
+            if ( dex < o.length - 1 ) {
+                q.nextElementSibling.firstElementChild.min = tv;
+            }
+            if ( dex > 0 ) {
+                q.previousElementSibling.firstElementChild.max = tv;
+            }
+            parchanged = true;
+            drawed = false;
+        }
+    }
+</script>
+</body>
+</html>
