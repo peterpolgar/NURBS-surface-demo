@@ -53,7 +53,7 @@
 <div id="wrapper">
     <div id="one">
         <div id="leiras">
-            <p id="pleir"><span id="usage">Usage:</span> Hover mouse above the point you want to select, and on a selected point you can adjust the x, y, z coordinates and the weight of that point, all of these are feasible by scroll up / scroll down on the corresponding part of the appearing popup. Disappear popup: left click. Camera moving around the object: arrows, zoom in: key j, zoom out: key f.</p>&nbsp;&nbsp;<a href="https://github.com/peterpolgar/NURBS-surface-demo">Source code</a>
+            <p id="pleir"><span id="usage">Usage:</span> Hover mouse above the point you want to select, and on a selected point you can adjust the x, y, z coordinates and the weight of that point, all of these are feasible by scroll up / scroll down on the corresponding part of the appearing popup. Disappear popup: right click. Camera moving around the object: dragging with left mouse button. Camera moves: arrows, j and f (original: enter). Zoom in / out: wheel up / down.</p>&nbsp;&nbsp;<a href="https://peterpolgar.github.io/NURBS-surface-demo">Source code</a>
         </div>
         <div id="cvas"></div>
     </div>
@@ -157,7 +157,7 @@
     </div>
 </div>
 <script src="addScreenPositionFunction.js"></script>
-<script src="surface.min.js"></script>
+<script src="surface_drag.min.js"></script>
 <script type="text/javascript">
     document.getElementById("butfc").addEventListener('click', ClickFc)
     document.getElementById("butsc").addEventListener('click', ClickSc)
@@ -346,6 +346,13 @@
             parchanged = true;
             drawed = false;
         }
+    }
+    
+    document.getElementById("cvas").addEventListener('contextmenu', Norightclick);
+    
+    function Norightclick(e) {
+        e.preventDefault();
+        return false;
     }
 </script>
 </body>
