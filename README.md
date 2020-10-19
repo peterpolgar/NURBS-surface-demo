@@ -3,8 +3,8 @@ This is a NURBS surface demonstration on a webpage: https://peterpolgar.github.i
 
 Programmed in an iterative way instead of recursion.
 
-surface.js and surface_grab.js (mouse controlled) contain some explanatory comments to better understanding the code.
+surface.js and surface_drag.js (mouse controlled) contain some explanatory comments to better understanding the code.
 
-surface_grab.min.js is the hosted version which is the minified form of surface_grab.js.
+surface_drag.min.js is the hosted version which is the minified form of surface_drag.js.
 
 Acknowledgement to bohnacker for the addScreenPositionFunction.js: https://github.com/bohnacker/p5js-screenPosition
